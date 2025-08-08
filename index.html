@@ -3,89 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>视频循环与音频同步修复</title>
+    <title>视频音频同步播放</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body, html { width: 100%; height: 100%; overflow: hidden; }
-        #fullscreen-video {
-            position: fixed;
-            top: 0; left: 0;
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
-            z-index: -1;
-            object-fit: cover;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        #background-audio { display: none; }
-        .hint {
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #main-video {
             position: fixed;
-            top: 50%; left: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 铺满屏幕 */
+        }
+        /* 隐藏音频控件但保持功能 */
+        #bg-audio {
+            display: none;
+        }
+        .click-prompt {
+            position: fixed;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             color: white;
             font-size: 1.2rem;
-            text-shadow: 0 0 10px #000;
+            text-shadow: 0 0 8px rgba(0,0,0,0.8);
             z-index: 10;
-            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <!-- 全屏循环视频 -->
+    <!-- 视频播放器 -->
     <video 
-        id="fullscreen-video"
+        id="main-video" 
         autoplay 
         muted 
         loop 
         playsinline
     >
         <source src="video.mp4" type="video/mp4">
-        浏览器不支持视频播放
+        您的浏览器不支持视频播放
     </video>
 
-    <!-- 背景音频（独立循环，不受视频影响） -->
+    <!-- 音频播放器 -->
     <audio 
-        id="background-audio" 
-        loop  <!-- 音频自身循环，与视频循环独立 -->
+        id="bg-audio" 
+        loop
     >
         <source src="audio.mp3" type="audio/mpeg">
-        浏览器不支持音频播放
+        您的浏览器不支持音频播放
     </audio>
 
-    <div class="hint">点击屏幕开启声音</div>
+    <div class="click-prompt">点击屏幕开启声音</div>
 
     <script>
-        const video = document.getElementById('fullscreen-video');
-        const audio = document.getElementById('background-audio');
-        const hint = document.querySelector('.hint');
-        let soundEnabled = false;
+        const video = document.getElementById('main-video');
+        const audio = document.getElementById('bg-audio');
+        const prompt = document.querySelector('.click-prompt');
+        let isReady = false;
 
-        // 点击屏幕开启声音
-        document.addEventListener('click', function() {
-            if (!soundEnabled) {
-                video.muted = false; // 开启视频声音
-                audio.muted = false; // 开启音频声音
+        // 预加载音频，确保文件完整
+        audio.load();
+
+        // 等待音频加载完成
+        audio.addEventListener('canplaythrough', () => {
+            isReady = true;
+            console.log('音频加载完成，总时长：', audio.duration, '秒');
+        });
+
+        // 点击屏幕触发声音
+        document.addEventListener('click', () => {
+            if (!isReady) {
+                prompt.textContent = '音频加载中，请稍候...';
+                return;
+            }
+
+            // 开启视频声音
+            video.muted = false;
+
+            // 强制播放音频
+            if (audio.paused) {
                 audio.play().catch(err => {
-                    console.log('音频播放失败:', err);
+                    console.error('音频播放失败：', err);
+                    prompt.textContent = '音频播放失败，请刷新页面';
                 });
-                hint.style.display = 'none';
-                soundEnabled = true;
             }
-        });
 
-        // 关键修复：视频循环结束时，确保音频继续播放（不重置/不停止）
-        video.addEventListener('ended', function() {
-            // 视频自然结束后会触发loop自动重播，此处不干预音频
-            if (soundEnabled) {
-                // 若音频意外停止，强制重启音频
-                if (audio.paused) {
-                    audio.play();
-                }
-            }
-        });
+            // 隐藏提示
+            prompt.style.display = 'none';
+        }, { once: true }); // 只响应一次点击
 
-        // 页面加载时预加载音频
-        window.addEventListener('load', function() {
-            audio.load(); // 预加载音频，避免点击时延迟
+        // 监听视频循环，确保音频持续播放
+        video.addEventListener('loop', () => {
+            if (!audio.paused) return;
+            // 若视频循环时音频意外停止，重新播放
+            audio.play().catch(err => console.warn('音频重放失败：', err));
         });
     </script>
 </body>
 </html>
+
