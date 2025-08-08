@@ -1,112 +1,290 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>视频音频同步播放</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vinyl Record Player</title>
+  <!-- 引入Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 引入Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  
+  <!-- 配置Tailwind自定义颜色和字体 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vinyl: {
+              dark: '#121212',
+              light: '#2a2a2a',
+              label: '#e63946'
+            }
+          },
+          fontFamily: {
+            record: ['Helvetica', 'Arial', 'sans-serif']
+          }
         }
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        #main-video {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 铺满屏幕 */
-        }
-        /* 隐藏音频控件但保持功能 */
-        #bg-audio {
-            display: none;
-        }
-        .click-prompt {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 1.2rem;
-            text-shadow: 0 0 8px rgba(0,0,0,0.8);
-            z-index: 10;
-        }
-    </style>
+      }
+    }
+  </script>
+  
+  <!-- 自定义工具类 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .record-spin {
+        animation: spin 20s linear infinite;
+      }
+      .record-pause {
+        animation-play-state: paused;
+      }
+      .grooves {
+        background-image: radial-gradient(
+          circle,
+          transparent 45%,
+          rgba(255, 255, 255, 0.05) 45%,
+          rgba(255, 255, 255, 0.05) 46%,
+          transparent 46%,
+          transparent 50%,
+          rgba(255, 255, 255, 0.05) 50%,
+          rgba(255, 255, 255, 0.05) 51%,
+          transparent 51%,
+          transparent 55%,
+          rgba(255, 255, 255, 0.05) 55%,
+          rgba(255, 255, 255, 0.05) 56%,
+          transparent 56%,
+          transparent 60%,
+          rgba(255, 255, 255, 0.05) 60%,
+          rgba(255, 255, 255, 0.05) 61%,
+          transparent 61%,
+          transparent 65%,
+          rgba(255, 255, 255, 0.05) 65%,
+          rgba(255, 255, 255, 0.05) 66%,
+          transparent 66%,
+          transparent 70%,
+          rgba(255, 255, 255, 0.05) 70%,
+          rgba(255, 255, 255, 0.05) 71%,
+          transparent 71%,
+          transparent 75%,
+          rgba(255, 255, 255, 0.05) 75%,
+          rgba(255, 255, 255, 0.05) 76%,
+          transparent 76%,
+          transparent 80%,
+          rgba(255, 255, 255, 0.05) 80%,
+          rgba(255, 255, 255, 0.05) 81%,
+          transparent 81%,
+          transparent 85%,
+          rgba(255, 255, 255, 0.05) 85%,
+          rgba(255, 255, 255, 0.05) 86%,
+          transparent 86%,
+          transparent 90%,
+          rgba(255, 255, 255, 0.05) 90%,
+          rgba(255, 255, 255, 0.05) 91%,
+          transparent 91%
+        );
+      }
+      .tonearm-shadow {
+        filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.4));
+      }
+    }
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
 </head>
-<body>
-    <!-- 视频播放器 -->
-    <video 
-        id="main-video" 
-        autoplay 
-        muted 
-        loop 
-        playsinline
-    >
-        <source src="video.mp4" type="video/mp4">
-        您的浏览器不支持视频播放
-    </video>
-
-    <!-- 音频播放器 -->
-    <audio 
-        id="bg-audio" 
-        loop
-    >
-        <source src="audio.mp3" type="audio/mpeg">
-        您的浏览器不支持音频播放
-    </audio>
-
-    <div class="click-prompt">点击屏幕开启声音</div>
-
-    <script>
-        const video = document.getElementById('main-video');
-        const audio = document.getElementById('bg-audio');
-        const prompt = document.querySelector('.click-prompt');
-        let isReady = false;
-
-        // 预加载音频，确保文件完整
-        audio.load();
-
-        // 等待音频加载完成
-        audio.addEventListener('canplaythrough', () => {
-            isReady = true;
-            console.log('音频加载完成，总时长：', audio.duration, '秒');
+<body class="bg-gray-900 min-h-screen flex flex-col items-center justify-center p-4 font-record text-white">
+  <!-- 音频元素 (用于播放音乐) -->
+  <audio id="recordAudio" preload="metadata">
+    您的浏览器不支持音频播放
+  </audio>
+  
+  <!-- 唱片机容器 -->
+  <div class="relative w-full max-w-4xl aspect-square md:aspect-[4/3] bg-gray-800 rounded-xl p-4 md:p-8 shadow-2xl border border-gray-700">
+    
+    <!-- 唱片机底座 -->
+    <div class="absolute bottom-0 left-0 right-0 h-1/4 bg-gray-700 rounded-b-xl -z-10"></div>
+    
+    <!-- 黑胶唱片 -->
+    <div class="relative w-full max-w-md aspect-square mx-auto mt-8 md:mt-0">
+      <!-- 唱片主体 -->
+      <div id="record" class="record-spin w-full h-full rounded-full bg-vinyl-dark grooves relative shadow-xl">
+        
+        <!-- 唱片标签 -->
+        <div class="absolute inset-[30%] rounded-full bg-vinyl-label flex items-center justify-center flex-col p-4">
+          <h2 class="text-center text-white font-bold text-lg md:text-xl mb-1">RETRO SOUNDS</h2>
+          <p class="text-center text-white/90 text-xs md:text-sm" id="currentTrack">No Track</p>
+          <div class="mt-2 w-6 h-6 rounded-full bg-white flex items-center justify-center">
+            <div class="w-2 h-2 rounded-full bg-vinyl-label"></div>
+          </div>
+        </div>
+        
+        <!-- 唱片中心 -->
+        <div class="absolute inset-[45%] rounded-full bg-vinyl-light border-2 border-gray-700"></div>
+      </div>
+    </div>
+    
+    <!-- 唱臂 -->
+    <div class="absolute top-0 right-[30%] w-[40%] h-4 flex items-start z-10 tonearm-shadow">
+      <div class="w-full h-1 bg-gray-500 rounded-full transform origin-left rotate-12 md:rotate-6"></div>
+      <div class="absolute bottom-0 left-[80%] w-6 h-6 -ml-3 -mb-3 rounded-full bg-gray-400 border-2 border-gray-500">
+        <!-- 唱头 -->
+        <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-1 h-8 bg-gray-400"></div>
+      </div>
+    </div>
+    
+    <!-- 控制面板 -->
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col md:flex-row items-center gap-4">
+      <!-- 音乐路径输入 -->
+      <div class="flex items-center gap-2 w-full md:w-auto">
+        <input type="text" id="musicPath" placeholder="输入音乐路径 (例如: music/song.mp3)" 
+               class="bg-gray-700 text-sm rounded px-3 py-2 w-full md:w-64 focus:outline-none focus:ring-1 focus:ring-vinyl-label">
+        <button id="setMusic" class="bg-vinyl-label px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors">
+          <<i class="fa fa-folder-open mr-1"></</i>设置
+        </button>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <button id="play-pause" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <<i class="fa fa-play text-white"></</i>
+        </button>
+        <button class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <<i class="fa fa-step-backward text-white"></</i>
+        </button>
+        <button class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <<i class="fa fa-step-forward text-white"></</i>
+        </button>
+        <div class="w-32 h-1 bg-gray-700 rounded-full overflow-hidden">
+          <div id="progressBar" class="h-full w-0 bg-vinyl-label transition-all"></div>
+        </div>
+        <button class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <<i class="fa fa-volume-up text-white"></</i>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 信息区域 -->
+  <div class="mt-8 text-center max-w-lg">
+    <h1 class="text-2xl md:text-3xl font-bold mb-2">Vinyl Record Experience</h1>
+    <p class="text-gray-400 mb-4">输入本地音乐路径，通过虚拟唱片机播放您喜爱的音乐</p>
+    <div class="text-xs text-gray-500 mb-4">
+      提示: 由于浏览器安全限制，需确保音乐文件与网页在同一目录或允许跨域访问
+    </div>
+    <div class="flex justify-center gap-4">
+      <button id="sampleTrack" class="px-4 py-2 bg-vinyl-label rounded hover:bg-red-600 transition-colors">
+        <<i class="fa fa-music mr-2"></</i>播放示例音乐
+      </button>
+      <button class="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors">
+        <<i class="fa fa-info-circle mr-2"></</i>使用说明
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    // 获取DOM元素
+    const record = document.getElementById('record');
+    const playPauseBtn = document.getElementById('play-pause');
+    const audioElement = document.getElementById('recordAudio');
+    const playIcon = playPauseBtn.querySelector('i');
+    const progressBar = document.getElementById('progressBar');
+    const setMusicBtn = document.getElementById('setMusic');
+    const musicPathInput = document.getElementById('musicPath');
+    const currentTrackElement = document.getElementById('currentTrack');
+    const sampleTrackBtn = document.getElementById('sampleTrack');
+    
+    let isPlaying = false;
+    
+    // 播放/暂停控制
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    
+    // 设置音乐路径
+    setMusicBtn.addEventListener('click', () => {
+      const path = musicPathInput.value.trim();
+      if (path) {
+        setAudioSource(path);
+      } else {
+        alert('请输入音乐文件路径');
+      }
+    });
+    
+    // 播放示例音乐
+    sampleTrackBtn.addEventListener('click', () => {
+      // 这里使用一个公开的示例音频URL，实际使用时替换为你的本地文件路径
+      const sampleUrl = 'audio.mp3';
+      setAudioSource(sampleUrl);
+      musicPathInput.value = sampleUrl;
+    });
+    
+    // 设置音频源
+    function setAudioSource(src) {
+      audioElement.src = src;
+      audioElement.load();
+      
+      // 显示当前曲目名称
+      const trackName = src.split('/').pop().split('.').shift();
+      currentTrackElement.textContent = trackName;
+      
+      // 自动播放
+      if (!isPlaying) {
+        togglePlayPause();
+      }
+    }
+    
+    // 切换播放/暂停状态
+    function togglePlayPause() {
+      isPlaying = !isPlaying;
+      
+      if (isPlaying) {
+        // 开始播放
+        audioElement.play().catch(error => {
+          console.error('播放失败:', error);
+          alert('播放失败，请检查文件路径或浏览器权限');
+          isPlaying = false;
         });
-
-        // 点击屏幕触发声音
-        document.addEventListener('click', () => {
-            if (!isReady) {
-                prompt.textContent = '音频加载中，请稍候...';
-                return;
-            }
-
-            // 开启视频声音
-            video.muted = false;
-
-            // 强制播放音频
-            if (audio.paused) {
-                audio.play().catch(err => {
-                    console.error('音频播放失败：', err);
-                    prompt.textContent = '音频播放失败，请刷新页面';
-                });
-            }
-
-            // 隐藏提示
-            prompt.style.display = 'none';
-        }, { once: true }); // 只响应一次点击
-
-        // 监听视频循环，确保音频持续播放
-        video.addEventListener('loop', () => {
-            if (!audio.paused) return;
-            // 若视频循环时音频意外停止，重新播放
-            audio.play().catch(err => console.warn('音频重放失败：', err));
-        });
-    </script>
+        record.classList.remove('record-pause');
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+      } else {
+        // 暂停播放
+        audioElement.pause();
+        record.classList.add('record-pause');
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+      }
+    }
+    
+    // 更新进度条
+    audioElement.addEventListener('timeupdate', () => {
+      const progress = (audioElement.currentTime / audioElement.duration) * 100;
+      progressBar.style.width = `${progress}%`;
+    });
+    
+    // 音频结束时自动暂停
+    audioElement.addEventListener('ended', () => {
+      isPlaying = false;
+      record.classList.add('record-pause');
+      playIcon.classList.remove('fa-pause');
+      playIcon.classList.add('fa-play');
+    });
+    
+    // 唱片悬停效果
+    record.addEventListener('mouseenter', () => {
+      if (isPlaying) {
+        record.style.animationDuration = '40s';
+      }
+    });
+    
+    record.addEventListener('mouseleave', () => {
+      if (isPlaying) {
+        record.style.animationDuration = '20s';
+      }
+    });
+  </script>
 </body>
 </html>
-
