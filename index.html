@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环视频 + 独立音频播放</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .player-group {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .player-item {
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        h2 {
+            color: #555;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        video {
+            width: 100%;
+            border-radius: 6px;
+            background-color: #000;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .note {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #f0f7ff;
+            border-left: 3px solid #4285f4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>视频循环播放 + 独立音频控制</h1>
+        
+        <div class="player-group">
+            <!-- 循环播放的视频 -->
+            <div class="player-item">
+                <h2>循环视频（自动播放+循环）</h2>
+                <video 
+                    controls 
+                    autoplay 
+                    muted 
+                    loop  <!-- 视频循环播放核心属性 -->
+                    poster="https://picsum.photos/1280/720"  <!-- 视频封面图 -->
+                    preload="auto"
+                >
+                    <source src="/video/1.mp4" type="video/mp4">
+                    您的浏览器不支持HTML5视频播放
+                </video>
+                <p class="note">视频已设置loop属性，播放结束后会自动循环；默认静音（浏览器自动播放政策要求），可手动开启声音</p>
+            </div>
+
+            <!-- 独立音频 -->
+            <div class="player-item">
+                <h2>独立音频（可手动控制）</h2>
+                <audio 
+                    controls 
+                    preload="metadata"
+                >
+                    <source src="/audio/1.mp3" type="audio/mpeg">
+                    您的浏览器不支持HTML5音频播放
+                </audio>
+                <p class="note">音频需手动点击播放，可与视频同时播放，两者控制相互独立</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
