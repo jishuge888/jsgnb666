@@ -92,5 +92,23 @@
             document.removeEventListener('click', enableSound);
         });
     </script>
+    <body>
+    <audio id="myAudio" src="your_audio.mp3" preload="auto"></audio>
+    <script>
+        const audio = document.getElementById('myAudio');
+        // 设置播放时长，单位为毫秒，这里设置为10秒
+        const playTime = 100000; 
+        function playAudio() {
+            audio.play();
+            console.log('音乐开始播放');
+            setTimeout(() => {
+                audio.pause();
+                audio.currentTime = 0;
+                console.log('音乐停止播放');
+            }, playTime);
+        }
+        window.onload = playAudio;
+    </script>
+
 </body>
 </html>
