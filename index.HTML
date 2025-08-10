@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>极致炫酷HTML背景：多面体、超链接滚动弹幕</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Montserrat:700|Roboto:300&display=swap');
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #a1c4fd 100%);
+            overflow: hidden;
+        }
+        .center-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255,255,255,0.15);
+            border-radius: 30px;
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.37);
+            backdrop-filter: blur(8px);
+            padding: 48px 60px;
+            text-align: center;
+            z-index: 10;
+        }
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3.2em;
+            background: linear-gradient(90deg, #f7971e, #ffd200, #21d4fd, #b721ff, #fd1d1d);
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: 2px;
+            animation: hue-rotate 6s infinite linear;
+        }
+        @keyframes hue-rotate {
+            0% { filter: hue-rotate(0deg);}
+            100% { filter: hue-rotate(360deg);}
+        }
+        p {
+            font-size: 1.3em;
+            color: #444;
+            margin-bottom: 30px;
+        }
+        .btn {
+            background: linear-gradient(90deg, #52e5e7, #130cb7);
+            color: #fff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 1.1em;
+            border-radius: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            cursor: pointer;
+            transition: background 0.4s, transform 0.2s;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #ff512f, #dd2476);
+            transform: scale(1.07);
+        }
+        .background-waves, #particles, #geometry-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+            display: block;
+        }
+        #geometry-bg { z-index: 4; }
+        #particles { z-index: 3; }
+        .danmu {
+            position: fixed;
+            left: 100vw;
+            white-space: nowrap;
+            font-size: 2em;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            padding: 6px 24px;
+            border-radius: 24px;
+            background: linear-gradient(90deg,#ff0080,#7928ca,#42e695,#ffd200,#f7971e,#fd1d1d);
+            background-size: 300% 300%;
+            color: #fff;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            border: 2px solid #fff5;
+            animation: danmu-move 14s linear infinite, danmu-color 4s linear infinite;
+            z-index: 100;
+            pointer-events: none;
+            user-select: none;
+        }
+        @keyframes danmu-move {
+            from { left: 100vw; }
+            to   { left: -70vw; }
+        }
+        @keyframes danmu-color {
+            0% { filter: hue-rotate(0deg);}
+            100% { filter: hue-rotate(360deg);}
+        }
+        .danmu-link {
+            display: inline-block;
+            color: #fff;
+            font-weight: bold;
+            text-decoration: underline wavy #ffd200;
+            background: linear-gradient(90deg,#21d4fd,#b721ff,#fd1d1d,#ffd200);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-fill-color: transparent;
+            animation: hue-rotate 3s infinite linear;
+            border-radius: 0;
+            border: none;
+            padding: 0 10px;
+            margin: 0 8px;
+            transition: filter 0.2s;
+        }
+        .danmu-link:hover {
+            filter: drop-shadow(0 0 8px #fff) brightness(1.1);
+        }
+        .bubble {
+            position: fixed;
+            bottom: -60px;
+            border-radius: 50%;
+            opacity: 0.7;
+            pointer-events: none;
+            z-index: 2;
+            mix-blend-mode: lighten;
+            animation: bubble-rise 8s linear infinite;
+        }
+        @keyframes bubble-rise {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            80% { opacity: 0.7; }
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+        }
+        .bubble-chat {
+            position: fixed;
+            min-width: 120px;
+            max-width: 220px;
+            padding: 16px 26px;
+            background: linear-gradient(135deg, #fff 60%, #f3d6ff 100%);
+            border-radius: 36px 36px 36px 12px;
+            box-shadow: 0 4px 24px rgba(100,0,150,0.14);
+            color: #722ed1;
+            font-size: 1.18em;
+            font-family: 'Montserrat', sans-serif;
+            left: 70vw;
+            bottom: 18vh;
+            z-index: 99;
+            border: 2px solid #e1d4ff;
+            animation: chat-pop 2s cubic-bezier(0.55,1.6,0.57,1) alternate infinite;
+        }
+        @keyframes chat-pop {
+            0%   {transform: scale(0.96) translateY(4px);}
+            60%  {transform: scale(1.02) translateY(-5px);}
+            100% {transform: scale(1) translateY(0);}
+        }
+    </style>
+</head>
+<body>
+<canvas class="background-waves"></canvas>
+<canvas id="particles"></canvas>
+<canvas id="geometry-bg"></canvas>
+<div class="center-box">
+    <h1>你好，世界！</h1>
+    <p>极致绚丽动态HTML：多面体、数学弹幕与滚动超链接！</p>
+    <button class="btn" onclick="alert('你触发了特效按钮！')">点我试试</button>
+</div>
+<div class="bubble-chat" id="bubble-chat" style="display:none;">欢迎来到炫酷页面！</div>
+<script>
+    // 动态彩色流动背景
+    const canvas = document.querySelector('.background-waves');
+    const ctx = canvas.getContext('2d');
+    let w, h, t = 0;
+    function resize() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    function draw() {
+        ctx.clearRect(0, 0, w, h);
+        for (let i = 0; i < 3; i++) {
+            ctx.beginPath();
+            for (let x = 0; x <= w; x += 10) {
+                const y = h/2 + Math.sin((x/200) + t + i*2) * 60 + Math.cos((x/100) + t*1.5 + i*3) * 40;
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.lineWidth = 3 + i*2;
+            ctx.strokeStyle = `hsla(${(t*50 + i*120)%360}, 90%, 70%, 0.15)`;
+            ctx.stroke();
+        }
+        t += 0.012;
+        requestAnimationFrame(draw);
+    }
+    draw();
+
+    // 数学公式弹幕+滚动超链接
+    const danmuMathList = [
+        "e^{i\\pi} + 1 = 0",
+        "\\int_{-\\infty}^{\\infty} e^{-x^2} dx = \\sqrt{\\pi}",
+        "a^2 + b^2 = c^2",
+        "\\sum_{n=1}^{\\infty}\\frac{1}{n^2} = \\frac{\\pi^2}{6}",
+        "\\nabla \\cdot \\vec{E} = \\frac{\\rho}{\\varepsilon_0}",
+        "F=ma",
+        "f(x) = \\lim_{h \\to 0} \\frac{f(x+h)-f(x)}{h}",
+        "\\frac{d}{dx}e^x = e^x",
+        "\\displaystyle P(A|B) = \\frac{P(A \\cap B)}{P(B)}",
+        "\\left(\\begin{array}{cc}a & b \\\\ c & d\\end{array}\\right)",
+        "S = \\frac{1}{2} r^2 \\theta"
+    ];
+
+    function createDanmu(text) {
+        const danmu = document.createElement('div');
+        danmu.className = 'danmu';
+        danmu.style.top = `${Math.random() * (window.innerHeight*0.66) + 18}px`;
+        danmu.style.fontSize = `${Math.random()*1.5+1.4}em`;
+        danmu.style.filter = `drop-shadow(0 2px 6px hsla(${Math.random()*360},80%,60%,0.3))`;
+        danmu.innerHTML = `\\(${text}\\)`;
+        document.body.appendChild(danmu);
+        if(window.MathJax && window.MathJax.typesetPromise){
+            MathJax.typesetPromise([danmu]);
+        }
+        setTimeout(() => {
+            danmu.remove();
+        }, 14000);
+    }
+    setInterval(() => {
+        createDanmu(danmuMathList[Math.floor(Math.random()*danmuMathList.length)]);
+    }, 1900);
+    setTimeout(() => createDanmu("\\text{✨ 开启炫酷数学模式 ✨}"), 900);
+
+    // 滚动超链接弹幕
+    function createLinkDanmu() {
+        const danmu = document.createElement('div');
+        danmu.className = 'danmu';
+        danmu.style.top = `${Math.random() * (window.innerHeight*0.60) + 10}px`;
+        danmu.style.fontSize = `${Math.random()*1.6 + 1.7}em`;
+        danmu.style.animationDuration = `${9 + Math.random()*5}s`;
+        // 超链接内容
+        danmu.innerHTML = `<a href="https://jishuge888.github.io/zhoujielun/" class="danmu-link" target="_blank" rel="noopener">好看的，快点这个</a>`;
+        document.body.appendChild(danmu);
+        setTimeout(() => {
+            danmu.remove();
+        }, 15000);
+    }
+    // 每7秒发一个滚动超链接
+    setInterval(createLinkDanmu, 7000);
+    setTimeout(createLinkDanmu, 1800);
+
+    // 气泡特效
+    function createBubble() {
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        const size = Math.random()*38 + 22;
+        bubble.style.width = bubble.style.height = `${size}px`;
+        bubble.style.left = `${Math.random()*100}vw`;
+        bubble.style.background = `radial-gradient(circle at 30% 35%, #fff, #${Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0')} 80%)`;
+        bubble.style.opacity = Math.random()*0.5 + 0.4;
+        bubble.style.animationDuration = `${Math.random()*2+7.5}s`;
+        document.body.appendChild(bubble);
+        setTimeout(()=>bubble.remove(), 9000);
+    }
+    setInterval(createBubble, 290);
+
+    // 粒子特效
+    const pc = document.getElementById('particles');
+    const pctx = pc.getContext('2d');
+    let pw = window.innerWidth, ph = window.innerHeight;
+    pc.width = pw; pc.height = ph;
+    window.addEventListener('resize', ()=>{
+        pw = window.innerWidth; ph = window.innerHeight;
+        pc.width = pw; pc.height = ph;
+    });
+    let particles = [];
+    for(let i=0;i<100;i++){
+        particles.push({
+            x: Math.random()*pw,
+            y: Math.random()*ph,
+            r: Math.random()*2.4+1.2,
+            d: Math.random()*360,
+            c: `hsl(${Math.random()*360},80%,70%)`,
+            s: Math.random()*1.1+0.6
+        });
+    }
+    function drawParticles(){
+        pctx.clearRect(0,0,pw,ph);
+        for(let i=0;i<particles.length;i++){
+            let p=particles[i];
+            pctx.beginPath();
+            pctx.arc(p.x, p.y, p.r, 0, 2 * Math.PI);
+            pctx.fillStyle = p.c;
+            pctx.globalAlpha = 0.76;
+            pctx.shadowColor = p.c;
+            pctx.shadowBlur = 8;
+            pctx.fill();
+            p.x += Math.sin(p.d) * p.s;
+            p.y += Math.cos(p.d) * p.s;
+            p.d += Math.random()*0.06-0.03;
+            if(p.x<0||p.x>pw||p.y<0||p.y>ph){
+                p.x = Math.random()*pw;
+                p.y = Math.random()*ph;
+            }
+        }
+        pctx.globalAlpha=1;
+        pctx.shadowBlur=0;
+        requestAnimationFrame(drawParticles);
+    }
+    drawParticles();
+
+    // 气泡弹窗
+    const bubbleChat = document.getElementById('bubble-chat');
+    setTimeout(()=>{
+        bubbleChat.style.display = 'block';
+        bubbleChat.textContent = '🎉 欢迎来到炫酷页面！';
+        setTimeout(()=>bubbleChat.style.display='none', 3500);
+    }, 1600);
+
+    document.querySelector('.btn').onclick = function() {
+        createDanmu("\\text{按钮被点击了！}");
+        bubbleChat.textContent = "你触发了气泡弹窗！";
+        bubbleChat.style.display = 'block';
+        setTimeout(()=>bubbleChat.style.display='none', 2400);
+    };
+
+    // 多面几何体骨链旋转背景
+    const geoCanvas = document.getElementById('geometry-bg');
+    let gw = geoCanvas.width = window.innerWidth;
+    let gh = geoCanvas.height = window.innerHeight;
+    window.addEventListener('resize', ()=>{
+        gw = geoCanvas.width = window.innerWidth;
+        gh = geoCanvas.height = window.innerHeight;
+    });
+    const gctx = geoCanvas.getContext('2d');
+    function rotate3D([x, y, z], ax, ay, az) {
+        let radX = ax, radY = ay, radZ = az;
+        let nx = x, ny = y * Math.cos(radX) - z * Math.sin(radX), nz = y * Math.sin(radX) + z * Math.cos(radX);
+        let tx = nx * Math.cos(radY) + nz * Math.sin(radY), ty = ny, tz = -nx * Math.sin(radY) + nz * Math.cos(radY);
+        let fx = tx * Math.cos(radZ) - ty * Math.sin(radZ), fy = tx * Math.sin(radZ) + ty * Math.cos(radZ), fz = tz;
+        return [fx, fy, fz];
+    }
+    function project([x, y, z], cx, cy, scale=1.2) {
+        let d = 1000/(z+1800);
+        return [
+            cx + (x * d * scale),
+            cy + (y * d * scale)
+        ];
+    }
+    const octahedron = {
+        vertices: [
+            [0, 0, 130],   [0, 0, -130],
+            [130, 0, 0],   [-130, 0, 0],
+            [0, 130, 0],   [0, -130, 0]
+        ],
+        edges: [
+            [0,2],[0,3],[0,4],[0,5],
+            [1,2],[1,3],[1,4],[1,5],
+            [2,4],[2,5],[3,4],[3,5]
+        ]
+    };
+    const tetrahedron = {
+        vertices: [
+            [100, 100, 100], [-100, -100, 100], [-100, 100, -100], [100, -100, -100]
+        ],
+        edges: [
+            [0,1],[0,2],[0,3],[1,2],[1,3],[2,3]
+        ]
+    };
+    const cube = {
+        vertices: [
+            [-90,-90,-90],[90,-90,-90],[90,90,-90],[-90,90,-90],
+            [-90,-90,90],[90,-90,90],[90,90,90],[-90,90,90]
+        ],
+        edges: [
+            [0,1],[1,2],[2,3],[3,0],
+            [4,5],[5,6],[6,7],[7,4],
+            [0,4],[1,5],[2,6],[3,7]
+        ]
+    };
+    function createBoneChain(n, radius, center, rot, offset = 0) {
+        let arr = [];
+        for(let i=0;i<n;i++) {
+            let a = i/n * Math.PI*2 + rot + offset;
+            arr.push([
+                center[0]+Math.cos(a)*radius,
+                center[1]+Math.sin(a)*radius
+            ]);
+        }
+        return arr;
+    }
+    let polys = [
+        {
+            obj: octahedron,
+            pos: [gw*0.27, gh*0.38],
+            color: "#ffb347",
+            rot: [0.1,0.3,0.1],
+            dRot: [0.005,0.005,0.002],
+            scale: 1.1
+        },
+        {
+            obj: tetrahedron,
+            pos: [gw*0.70, gh*0.60],
+            color: "#7ee8fa",
+            rot: [0.2,0.45,0.2],
+            dRot: [0.004,0.004,0.003],
+            scale: 1.15
+        },
+        {
+            obj: cube,
+            pos: [gw*0.52, gh*0.32],
+            color: "#eec0c6",
+            rot: [0.3,0.22,0.13],
+            dRot: [0.006,0.003,0.005],
+            scale: 1.05
+        }
+    ];
+    function drawGeometryBG() {
+        gctx.clearRect(0,0,gw,gh);
+        for(let idx=0;idx<polys.length;idx++) {
+            let poly = polys[idx];
+            for(let i=0;i<3;i++) poly.rot[i] += poly.dRot[i];
+            let points = poly.obj.vertices.map(v=>rotate3D(v, ...poly.rot));
+            let projs = points.map(v=>project(v, poly.pos[0], poly.pos[1], poly.scale));
+            gctx.save();
+            gctx.globalAlpha = 0.85;
+            gctx.strokeStyle = poly.color;
+            gctx.lineWidth = 3+idx;
+            for(let e of poly.obj.edges){
+                gctx.beginPath();
+                gctx.moveTo(projs[e[0]][0], projs[e[0]][1]);
+                gctx.lineTo(projs[e[1]][0], projs[e[1]][1]);
+                gctx.stroke();
+            }
+            gctx.globalAlpha = 1;
+            for(let p of projs){
+                gctx.beginPath();
+                gctx.arc(p[0],p[1],7+idx*1.4,0,Math.PI*2);
+                gctx.fillStyle = "#fff";
+                gctx.shadowColor = poly.color;
+                gctx.shadowBlur = 16;
+                gctx.fill();
+                gctx.shadowBlur = 0;
+            }
+            gctx.restore();
+            let nChain = 10 + idx*3;
+            let chainRad = 180 + idx*50;
+            let chain = createBoneChain(nChain, chainRad, poly.pos, poly.rot[2]);
+            gctx.save();
+            gctx.strokeStyle = "rgba(0,0,0,0.13)";
+            gctx.lineWidth = 2;
+            for(let j=0;j<chain.length;j++){
+                let p1 = chain[j], p2 = chain[(j+1)%chain.length];
+                gctx.beginPath();
+                gctx.moveTo(p1[0],p1[1]);
+                gctx.lineTo(p2[0],p2[1]);
+                gctx.stroke();
+                gctx.beginPath();
+                gctx.arc(p1[0],p1[1],6+idx*1.2,0,Math.PI*2);
+                gctx.fillStyle = "rgba(255,255,255,0.55)";
+                gctx.shadowColor = poly.color;
+                gctx.shadowBlur = 8;
+                gctx.fill();
+                gctx.shadowBlur = 0;
+            }
+            let center = poly.pos;
+            for(let j=0;j<chain.length;j+=Math.floor(chain.length/3)){
+                gctx.beginPath();
+                gctx.moveTo(center[0], center[1]);
+                gctx.lineTo(chain[j][0], chain[j][1]);
+                gctx.strokeStyle = poly.color+"88";
+                gctx.lineWidth = 2.5;
+                gctx.stroke();
+            }
+            gctx.restore();
+        }
+        requestAnimationFrame(drawGeometryBG);
+    }
+    drawGeometryBG();
+
+    // MathJax
+    window.MathJax = {
+        tex: { inlineMath: [['\\(', '\\)'], ['$', '$']] },
+        svg: { fontCache: 'global' }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</body>
+</html>
