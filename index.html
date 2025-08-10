@@ -118,6 +118,9 @@
             margin: 0 8px;
             transition: filter 0.2s;
         }
+        .danmu a.danmu-link {
+    pointer-events: auto;
+        }
         .danmu-link:hover {
             filter: drop-shadow(0 0 8px #fff) brightness(1.1);
         }
@@ -242,7 +245,7 @@
         danmu.style.fontSize = `${Math.random()*1.6 + 1.7}em`;
         danmu.style.animationDuration = `${9 + Math.random()*5}s`;
         // 超链接内容
-        danmu.innerHTML = `<a href="https://jishuge888.github.io/zhoujielun/" class="danmu-link" target="_blank" rel="noopener">周杰伦</a>`;
+        danmu.innerHTML = `<a href="https://jishuge888.github.io/zhoujielun/" class="danmu-link" target="_blank" rel="noopener">点击观看周杰伦</a>`;
         document.body.appendChild(danmu);
         setTimeout(() => {
             danmu.remove();
