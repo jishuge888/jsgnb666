@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>炫酷特效演示</title>
+  <title>技术🐢🐢🐢大帅哥</title>
   <style>
     @import url('https://fonts.googleapis.com/css?family=Montserrat:700|Roboto:300&display=swap');
     html,body{height:100%;margin:0;padding:0;font-family:'Roboto',sans-serif;background:linear-gradient(135deg,#ff9a9e 0%,#fad0c4 50%,#a1c4fd 100%);overflow:hidden}
@@ -56,13 +56,13 @@
   <canvas id="particles"></canvas>
   <canvas id="geometry-bg"></canvas>
 
-  <div class="center-box" role="main" aria-label="炫酷特效">
-    <h1>欢迎体验特效</h1>
-    <p>演示：气泡 · 粒子 · 多面体 · 弹幕（支持 MathJax）</p>
+  <div class="center-box" role="main" aria-label="操你妈">
+    <h1>操你妈</h1>
+    <p>唐僧肉全家死</p>
     <button class="btn" id="actionBtn">点我试试</button>
   </div>
 
-  <div class="bubble-chat" id="bubble-chat">欢迎来到炫酷演示！</div>
+  <div class="bubble-chat" id="bubble-chat">新年好操你妈！</div>
 
   <script>
     /* -------------------------
@@ -99,8 +99,8 @@
     (function(){
       // 安全示例弹幕数据，支持 plain 文本或含 LaTeX 的字符串
       const danmuList = [
-        "\\text{✨ 欢迎 ✨}",
-        "这是普通文本弹幕",
+        "\\text{✨ 欢迎sb ✨}",
+        "赶紧找个楼跳了吧",
         "\\(e^{i\\pi}+1=0\\)",
         "访问：<a href=\"https://jishuge888.github.io/\" target=\"_blank\" rel=\"noopener\">我的网站</a>",
         "\\(\\int_0^{\\infty} e^{-x} dx = 1\\)"
@@ -373,14 +373,14 @@
       const bubbleChat = document.getElementById('bubble-chat');
       setTimeout(()=>{
         bubbleChat.style.display = 'block';
-        bubbleChat.textContent = '🎉 欢迎来到特效演示页面！';
+        bubbleChat.textContent = '🎉 欢迎操你妈';
         setTimeout(()=>bubbleChat.style.display='none', 3500);
       }, 1600);
 
       document.getElementById('actionBtn').addEventListener('click', ()=>{
         // 触发一个 MathJax 弹幕与普通提示
         if(window.pushDanmu) window.pushDanmu("\\(\\sum_{n=1}^{\\infty} \\frac{1}{n^2} = \\frac{\\pi^2}{6}\\)");
-        bubbleChat.textContent = '点我触发了弹幕 ✨';
+        bubbleChat.textContent = '点我干什么 ✨';
         bubbleChat.style.display = 'block';
         setTimeout(()=>bubbleChat.style.display='none', 2400);
       }, {passive:true});
