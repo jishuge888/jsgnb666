@@ -169,7 +169,7 @@
 <canvas id="geometry-bg"></canvas>
 <div class="center-box">
     <h1>(¯▽¯)👍！</h1>
-    <p>❤️❤️fjx大坏蛋👍❤️❤️</p>
+    <p>唐思柔大傻逼😡</p>
     <button class="btn" onclick="alert('你触发了特效按钮！')">点我试试</button>
 </div>
 <div class="bubble-chat" id="bubble-chat" style="display:none;">欢迎来到炫酷🥚！</div>
@@ -204,13 +204,29 @@
 
     // 数学公式弹幕+滚动超链接
     const danmuMathList = [
-        "fjx大坏蛋",
-        "fjx大坏蛋",
-        "fjx小坏蛋",
-        "fjx小坏蛋",
-        "fjx大坏蛋",
-        "fjx小坏蛋",
-    ];
+  // 示例弹幕条目（保留你可能已有的其他条目）
+  {
+    id: 1,
+    user: "system",
+    type: "scroll",        // 滚动字幕
+    text: "操你妈",       // 要显示的内容
+    color: "#ff5b77",      // 字体颜色（可选）
+    fontSize: 24,          // 字号（可选，px）
+    speed: 1.2,            // 滚动速度（可选，单位：相对速度）
+    time: 0,               // 出现时间（秒），0 表示播放开始就出现
+    createdAt: Date.now()
+  },
+
+  // 你可以按需继续添加其它弹幕对象
+];
+    //const danmuMathList = [
+        fjx大坏
+        fjx大坏蛋,
+        fjx小坏蛋,
+        fjx小坏蛋,
+        fjx大坏蛋,
+        fjx小坏蛋,
+   // ];
 
     function createDanmu(text) {
         const danmu = document.createElement('div');
@@ -230,7 +246,7 @@
     setInterval(() => {
         createDanmu(danmuMathList[Math.floor(Math.random()*danmuMathList.length)]);
     }, 1900);
-    setTimeout(() => createDanmu("\\text{✨ 开启炫酷数学模式 ✨}"), 900);
+    setTimeout(() => createDanmu("\\text{✨ 开启炫酷操你妈模式 ✨}"), 900);
 
     // 滚动超链接弹幕
     function createLinkDanmu() {
@@ -314,13 +330,13 @@
     const bubbleChat = document.getElementById('bubble-chat');
     setTimeout(()=>{
         bubbleChat.style.display = 'block';
-        bubbleChat.textContent = '🎉 欢迎来到炫酷页面！';
+        bubbleChat.textContent = '🎉 欢迎来到技术龟的网页！';
         setTimeout(()=>bubbleChat.style.display='none', 3500);
     }, 1600);
 
     document.querySelector('.btn').onclick = function() {
-        createDanmu("\\text{按钮被点击了！}");
-        bubbleChat.textContent = "你触发了气泡弹窗！";
+        createDanmu("\\text{不要点我了！}");
+        bubbleChat.textContent = "点我干嘛！";
         bubbleChat.style.display = 'block';
         setTimeout(()=>bubbleChat.style.display='none', 2400);
     };
